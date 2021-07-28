@@ -55,7 +55,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/radovskyb/watcher"
+	"github.com/orishoshan/watcher"
 )
 
 func main() {
