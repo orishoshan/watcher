@@ -57,7 +57,7 @@ func main() {
 	// Get any of the paths to ignore.
 	ignoredPaths := strings.Split(*ignore, ",")
 	watchedExtensions := strings.Split(*extensions, ",")
-	if len(watchedExtensions) > 1 && watchedExtensions[0] != "*" {
+	if len(watchedExtensions) > 1 || watchedExtensions[0] != "*" {
 		w.AddFilterHook(func(info os.FileInfo, fullPath string) error {
 			for _, extension := range watchedExtensions {
 				if strings.HasSuffix(fullPath, extension) {
