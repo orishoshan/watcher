@@ -11,7 +11,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/radovskyb/watcher"
+	"github.com/orishoshan/watcher"
 )
 
 func main() {
@@ -24,6 +24,7 @@ func main() {
 	stdinPipe := flag.Bool("pipe", false, "pipe event's info to command's stdin")
 	keepalive := flag.Bool("keepalive", false, "keep alive when a cmd returns code != 0")
 	ignore := flag.String("ignore", "", "comma separated list of paths to ignore")
+	extensions := flag.String("extensions", "*", "comma separated list of extensions to watch")
 
 	flag.Parse()
 
@@ -55,6 +56,17 @@ func main() {
 
 	// Get any of the paths to ignore.
 	ignoredPaths := strings.Split(*ignore, ",")
+	watchedExtensions := strings.Split(*extensions, ",")
+	if len(watchedExtensions) > 1 && watchedExtensions[0] != "*" {
+		w.AddFilterHook(func(info os.FileInfo, fullPath string) error {
+			for _, extension := range watchedExtensions {
+				if strings.HasSuffix(fullPath, extension) {
+					return nil
+				}
+			}
+			return watcher.ErrSkip
+		})
+	}
 
 	for _, path := range ignoredPaths {
 		trimmed := strings.TrimSpace(path)
